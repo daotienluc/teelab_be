@@ -1,0 +1,76 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model product_type {
+  product_type_id Int        @id @default(autoincrement())
+  product_name    String?    @db.VarChar(255)
+  description     String?    @db.VarChar(255)
+  products        products[]
+}
+
+model products {
+  product_id      Int           @id @default(autoincrement())
+  product_name    String?       @db.VarChar(255)
+  price           Float?        @db.Float
+  quantity        Int?
+  material        String?       @db.VarChar(255)
+  form            String?       @db.VarChar(255)
+  color           String?       @db.VarChar(255)
+  design          String?       @db.VarChar(255)
+  product_type_id Int?
+  image           String?       @db.VarChar(255)
+  creater_id      Int?
+  description     String?       @db.VarChar(255)
+  sizes           String?       @db.VarChar(255)
+  cart            cart[]
+  product_type    product_type? @relation(fields: [product_type_id], references: [product_type_id], onDelete: NoAction, onUpdate: NoAction, map: "products_ibfk_1")
+  users           users?        @relation(fields: [creater_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "products_ibfk_2")
+
+  @@index([product_type_id], map: "product_type_id")
+  @@index([creater_id], map: "user_id")
+}
+
+model users {
+  user_id         Int        @id @default(autoincrement())
+  userName        String?    @db.VarChar(255)
+  phone           String?    @db.VarChar(255)
+  email           String?    @db.VarChar(255)
+  password        String?    @db.VarChar(255)
+  avata           String?    @db.VarChar(1000)
+  facebook_app_id String?    @db.VarChar(255)
+  google_app_id   String?    @db.VarChar(255)
+  role            String?    @db.VarChar(255)
+  description     String?    @db.VarChar(255)
+  cart            cart[]
+  products        products[]
+}
+
+model cart {
+  cart_id      Int          @id @default(autoincrement())
+  user_id      Int?
+  product_id   Int?
+  quantity     Int?
+  form         String?      @db.VarChar(255)
+  color        String?      @db.VarChar(255)
+  sizes        String?      @db.VarChar(255)
+  status       cart_status? @default(pending)
+  price        Float?       @db.Float
+  image        String?      @db.VarChar(255)
+  product_name String?      @db.VarChar(255)
+  users        users?       @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction, map: "cart_ibfk_1")
+  products     products?    @relation(fields: [product_id], references: [product_id], onDelete: Cascade, onUpdate: NoAction, map: "cart_ibfk_2")
+
+  @@index([product_id], map: "product_id")
+  @@index([user_id], map: "user_id")
+}
+
+enum cart_status {
+  pending
+  purchased
+}

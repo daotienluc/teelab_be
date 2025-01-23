@@ -1,0 +1,62 @@
+import { BadRequestException } from "../common/helpers/error.helper.js";
+import prisma from "../common/prisma/init.prisma.js";
+import bcrypt from "bcrypt";
+
+const usersService = {
+  getAllUser: async (id) => {
+    const data = await prisma.users.findMany();
+
+    return data;
+  },
+
+  getUserById: async (id) => {
+    const data = await prisma.users.findUnique({ where: { user_id: id } });
+
+    return data;
+  },
+
+  addUser: async (req) => {
+    const { userName, phone, email, password, avata, role } = req.body;
+    let userExists = await prisma.users.findFirst({ where: { email: email } });
+    if (userExists) {
+      throw new BadRequestException("Tài khoản đã tồn tại !");
+    } else {
+      const passwordHash = bcrypt.hashSync(password, 10);
+      userExists = await prisma.users.create({
+        data: {
+          userName: userName,
+          email: email,
+          password: passwordHash,
+          phone: phone,
+          avata: avata,
+          role: role,
+        },
+      });
+    }
+
+    return userExists;
+  },
+
+  updateUser: async (req) => {
+    const id = parseInt(req.params.id);
+    const { userName, phone, email, avata } = req.body;
+
+    const data = await prisma.users.update({
+      where: { user_id: id },
+      data: {
+        userName: userName,
+        email: email,
+        phone: phone,
+        avata: avata,
+      },
+    });
+    return data;
+  },
+
+  deleteUser: async (req) => {
+    const id = parseInt(req.params.id);
+    const data = await prisma.users.delete({ where: { user_id: id } });
+    return data;
+  },
+};
+export default usersService;
