@@ -1,3 +1,4 @@
+import { BadRequestException } from "../common/helpers/error.helper.js";
 import prisma from "../common/prisma/init.prisma.js";
 
 const productsServices = {
@@ -6,17 +7,19 @@ const productsServices = {
     return products;
   },
 
-  productById: async (id) => {
+  productById: async (req) => {
+    const { id } = req.params;
     const products = await prisma.products.findUnique({
-      where: { product_id: id },
+      where: { product_id: +id },
     });
     return products;
   },
 
   productByUserId: async (req) => {
-    const userId = parseInt(req.params.userId);
+    const { user_id } = req.params;
+    console.log({ user_id });
     const products = await prisma.products.findMany({
-      where: { user_id: userId },
+      where: { creater_id: +user_id },
     });
     return products;
   },
@@ -39,15 +42,17 @@ const productsServices = {
     return products;
   },
 
-  productType: async (product_type_id) => {
+  productType: async (req) => {
+    const { productTypeId } = req.params;
     const products = await prisma.products.findMany({
-      where: { product_type_id: product_type_id },
+      where: { product_type_id: +productTypeId },
     });
 
     return products;
   },
 
-  themDanhMuc: async (product_name, description) => {
+  addCategoryProduct: async (req) => {
+    const { product_name, description } = req.body;
     const data = await prisma.product_type.create({
       data: {
         product_name: product_name,
@@ -57,7 +62,7 @@ const productsServices = {
     return data;
   },
 
-  themSanPham: async (req) => {
+  addProduct: async (req) => {
     const {
       name,
       price,
@@ -83,27 +88,28 @@ const productsServices = {
         description: description,
         image: image,
         product_type_id: product_type,
-        user_id: user_id,
+        creater_id: user_id,
         sizes: "M",
       },
     });
     return data;
   },
 
-  updateProduct: async (
-    id,
-    name,
-    price,
-    quantity,
-    material,
-    form,
-    color,
-    design,
-    description,
-    image
-  ) => {
+  updateProduct: async (req) => {
+    const { id } = req.params;
+    const {
+      name,
+      price,
+      quantity,
+      material,
+      form,
+      color,
+      design,
+      description,
+      image,
+    } = req.body;
     const data = await prisma.products.update({
-      where: { product_id: id },
+      where: { product_id: +id },
       data: {
         product_name: name,
         price: price,
@@ -119,11 +125,18 @@ const productsServices = {
     return data;
   },
 
-  deleteProduct: async (id) => {
-    const data = await prisma.products.delete({
-      where: { product_id: id },
+  deleteProduct: async (req) => {
+    const { id } = req.params;
+    const chechId = await prisma.products.findFirst({
+      where: { product_id: +id },
     });
-    return data;
+    if (!chechId) {
+      throw new BadRequestException("Không tìm thấy sản phẩm !");
+    }
+    const data = await prisma.products.delete({
+      where: { product_id: +id },
+    });
+    return [];
   },
 };
 

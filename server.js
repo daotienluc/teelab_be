@@ -13,7 +13,7 @@ app.use(
   })
 );
 
-app.use("/api", rootRouter);
+app.use(rootRouter);
 
 app.use(handleError);
 

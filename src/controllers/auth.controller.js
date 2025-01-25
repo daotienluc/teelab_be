@@ -3,9 +3,8 @@ import authServices from "../services/auth.services.js";
 
 const authController = {
   register: async (req, res, next) => {
-    const { userName, email, password } = req.body;
     try {
-      const register = await authServices.register(userName, email, password);
+      const register = await authServices.register(req);
       const resData = responseSuccess(register, `Đăng ký thành công`, 200);
       res.status(resData.code).json(resData);
     } catch (error) {

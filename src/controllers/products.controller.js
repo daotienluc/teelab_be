@@ -17,9 +17,8 @@ const productsController = {
   },
 
   productById: async (req, res, next) => {
-    const id = parseInt(req.params.id);
     try {
-      const product = await productsServices.productById(id);
+      const product = await productsServices.productById(req);
       const resData = responseSuccess(product, `Lấy sản phẩm thành công`, 200);
       res.status(resData.code).json(resData);
     } catch (error) {
@@ -70,9 +69,8 @@ const productsController = {
   },
 
   productType: async (req, res, next) => {
-    const product_type_id = parseInt(req.params.product_type_id);
     try {
-      const product = await productsServices.productType(product_type_id);
+      const product = await productsServices.productType(req);
       const resData = responseSuccess(
         product,
         `Lấy tất cả sản phẩm thành công`,
@@ -84,13 +82,9 @@ const productsController = {
     }
   },
 
-  themDanhMuc: async (req, res, next) => {
-    const { product_name, description } = req.body;
+  addCategoryProduct: async (req, res, next) => {
     try {
-      const product = await productsServices.themDanhMuc(
-        product_name,
-        description
-      );
+      const product = await productsServices.addCategoryProduct(req);
       const resData = responseSuccess(product, `Thêm danh mục thành công`, 200);
       res.status(resData.code).json(resData);
     } catch (error) {
@@ -98,9 +92,9 @@ const productsController = {
     }
   },
 
-  themSanPham: async (req, res, next) => {
+  addProduct: async (req, res, next) => {
     try {
-      const product = await productsServices.themSanPham(req);
+      const product = await productsServices.addProduct(req);
       const resData = responseSuccess(product, `Thêm sản phẩm thành công`, 200);
       res.status(resData.code).json(resData);
     } catch (error) {
@@ -109,33 +103,8 @@ const productsController = {
   },
 
   updateProduct: async (req, res, next) => {
-    const id = parseInt(req.params.id);
-    const {
-      name,
-      price,
-      quantity,
-      material,
-      form,
-      color,
-      design,
-      description,
-      product_type,
-      image,
-    } = req.body;
     try {
-      const product = await productsServices.updateProduct(
-        id,
-        name,
-        price,
-        quantity,
-        material,
-        form,
-        color,
-        design,
-        description,
-        product_type,
-        image
-      );
+      const product = await productsServices.updateProduct(req);
       const resData = responseSuccess(product, `Sửa sản phẩm thành công`, 200);
       res.status(resData.code).json(resData);
     } catch (error) {
@@ -144,10 +113,8 @@ const productsController = {
   },
 
   deleteProduct: async (req, res, next) => {
-    const id = parseInt(req.params.id);
-
     try {
-      const product = await productsServices.deleteProduct(id);
+      const product = await productsServices.deleteProduct(req);
       const resData = responseSuccess(product, `Xóa sản phẩm thành công`, 200);
       res.status(resData.code).json(resData);
     } catch (error) {

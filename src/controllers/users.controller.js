@@ -13,9 +13,8 @@ const usersController = {
   },
 
   getUserById: async (req, res, next) => {
-    const id = parseInt(req.params.id);
     try {
-      const userId = await usersService.getUserById(id);
+      const userId = await usersService.getUserById(req);
       const resData = responseSuccess(userId, `Lấy id user thành công`, 200);
       res.status(resData.code).json(resData);
     } catch (error) {

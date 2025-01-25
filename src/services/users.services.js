@@ -3,16 +3,17 @@ import prisma from "../common/prisma/init.prisma.js";
 import bcrypt from "bcrypt";
 
 const usersService = {
-  getAllUser: async (id) => {
+  getAllUser: async () => {
     const data = await prisma.users.findMany();
 
     return data;
   },
 
-  getUserById: async (id) => {
-    const data = await prisma.users.findUnique({ where: { user_id: id } });
-
-    return data;
+  getUserById: async (req) => {
+    const { id } = req.params;
+    const data = await prisma.users.findUnique({ where: { user_id: +id } });
+    const newData = { ...data, password: (data.password = "") };
+    return newData;
   },
 
   addUser: async (req) => {
@@ -38,11 +39,11 @@ const usersService = {
   },
 
   updateUser: async (req) => {
-    const id = parseInt(req.params.id);
+    const { id } = req.params;
     const { userName, phone, email, avata } = req.body;
 
     const data = await prisma.users.update({
-      where: { user_id: id },
+      where: { user_id: +id },
       data: {
         userName: userName,
         email: email,
@@ -54,9 +55,13 @@ const usersService = {
   },
 
   deleteUser: async (req) => {
-    const id = parseInt(req.params.id);
-    const data = await prisma.users.delete({ where: { user_id: id } });
-    return data;
+    const { id } = req.params;
+    const checkId = await prisma.users.findFirst({ where: { user_id: +id } });
+    if (!checkId) {
+      throw new BadRequestException("Không tìm thấy user !");
+    }
+    const data = await prisma.users.delete({ where: { user_id: +id } });
+    return [];
   },
 };
 export default usersService;

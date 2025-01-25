@@ -22,7 +22,7 @@ productsRouter.get(
 
 // lấy sản phẩm theo userId (lấy sản phẩm theo người đã tạo ra sản phẩm)
 productsRouter.get(
-  "/product-by-userId/:userId",
+  "/product-by-userId/:user_id",
   productsController.productByUserId
 );
 
@@ -31,20 +31,23 @@ productsRouter.get("/product-category", productsController.productByCategory);
 
 // lấy sản phẩm theo danh mục
 productsRouter.get(
-  "/product-type/:product_type_id",
+  "/product-type/:productTypeId",
   productsController.productType
 );
 
 // thêm danh mục sản phẩm
-productsRouter.post("/them-danh-muc", productsController.themDanhMuc);
+productsRouter.post(
+  "/addCategoryProduct",
+  productsController.addCategoryProduct
+);
 
 // thêm sản phẩm
-productsRouter.post("/them-san-pham", productsController.themSanPham);
+productsRouter.post("/addProduct", productsController.addProduct);
 
 // sửa sản phẩm
-productsRouter.put("/update-product/:id", productsController.updateProduct);
+productsRouter.put("/updateProduct/:id", productsController.updateProduct);
 
 // xóa sản phẩm
-productsRouter.delete("/delete-product/:id", productsController.deleteProduct);
+productsRouter.delete("/deleteProduct/:id", productsController.deleteProduct);
 
 export default productsRouter;

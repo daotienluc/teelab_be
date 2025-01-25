@@ -4,7 +4,8 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 const authServices = {
-  register: async (userName, email, password) => {
+  register: async (req) => {
+    const { userName, email, password, phone, avata } = req.body;
     const userExists = await prisma.users.findFirst({
       where: { email: email },
     });
@@ -20,6 +21,8 @@ const authServices = {
         userName: userName,
         email: email,
         password: passwordHash,
+        phone: phone,
+        avata: avata,
         role: "USER",
       },
     });

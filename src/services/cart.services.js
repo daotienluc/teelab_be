@@ -20,7 +20,6 @@ const cartServices = {
       const existingCartItem = await prisma.cart.findFirst({
         where: { product_id: product_id },
       });
-      console.log(existingCartItem);
       if (existingCartItem) {
         // Nếu sản phẩm đã tồn tại, cập nhật số lượng
         const updatedCartItem = await prisma.cart.update({
@@ -31,17 +30,6 @@ const cartServices = {
         });
         return updatedCartItem;
       } else {
-        console.log({
-          id,
-          product_id,
-          price,
-          color,
-          form,
-          quantity,
-          sizes,
-          image,
-          product_name,
-        });
         // Nếu sản phẩm chưa tồn tại, tạo mới sản phẩm trong giỏ hàng
         const newCartItem = await prisma.cart.create({
           data: {
@@ -67,12 +55,12 @@ const cartServices = {
   },
 
   getCartById: async (req) => {
-    const { id } = req.body;
-    const idUser = await prisma.cart.findFirst({ where: { user_id: id } });
+    const { id } = req.params;
+    const idUser = await prisma.cart.findFirst({ where: { user_id: +id } });
     if (!idUser) {
       throw new BadRequestException("Không có sản phẩm nào trong giỏ hàng !");
     }
-    const data = await prisma.cart.findMany({ where: { user_id: id } });
+    const data = await prisma.cart.findMany({ where: { user_id: +id } });
     return data;
   },
 };
