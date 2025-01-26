@@ -19,14 +19,6 @@ app.use(handleError);
 
 const port = 3002;
 
-const start = async () => {
-  try {
-    app.listen(port, () => {
-      console.log(`Đang chạy server trên port ${port}`);
-    });
-  } catch (error) {
-    console.log(error);
-  }
+export default (req, res) => {
+  app(req, res); // Vercel sẽ sử dụng hàm này để xử lý các yêu cầu
 };
-
-start();
