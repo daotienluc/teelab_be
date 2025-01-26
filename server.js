@@ -19,6 +19,14 @@ app.use(handleError);
 
 const port = 3002;
 
-app.listen(port, () => {
-  console.log(`Đang chạy server trên port ${port}`);
-});
+const start = async () => {
+  try {
+    app.listen(port, () => {
+      console.log(`Đang chạy server trên port ${port}`);
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+start();
