@@ -13,10 +13,6 @@ app.use(
   })
 );
 
-app.get("/", (req, res, next) => {
-  res.send("Welcome");
-});
-
 app.use(rootRouter);
 
 app.use(handleError);
