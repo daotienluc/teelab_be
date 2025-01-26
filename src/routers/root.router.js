@@ -8,9 +8,9 @@ import swaggerUi from "swagger-ui-express";
 
 const rootRouter = express.Router();
 
-rootRouter.get("/", (req, res, next) => {
-  res.send("Welcome");
-});
+// rootRouter.get("/", (req, res, next) => {
+//   res.send("Welcome");
+// });
 
 rootRouter.use("/products", productsRouter);
 rootRouter.use("/auth", authRouter);
