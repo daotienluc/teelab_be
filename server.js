@@ -13,7 +13,7 @@ app.use(
       "http://localhost:5173",
       "https://teelab-fe.vercel.app",
       "https://daolucdev.io.vn",
-      "https://teelab-be-1.onrender.com",
+      "https://teelab-be.onrender.com",
     ],
   })
 );
