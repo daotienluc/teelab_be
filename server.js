@@ -5,18 +5,17 @@ import { handleError } from "./src/common/helpers/error.helper.js";
 
 const app = express();
 
-app.use(express.json());
-
 app.use(
   cors({
     origin: [
       "http://localhost:5173",
       "https://teelab-fe.vercel.app",
       "https://daolucdev.io.vn",
-      "https://teelab-be.onrender.com",
     ],
   })
 );
+
+app.use(express.json());
 
 app.use("/api", rootRouter);
 
