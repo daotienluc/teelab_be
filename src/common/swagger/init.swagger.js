@@ -14,7 +14,7 @@ export const swaggerDocument = {
       url: "http://localhost:3002/api",
       description: "hehe",
     },
-    { url: "https://teelab-be-1.onrender.com/api" },
+    { url: "https://teelab-be.onrender.com/api" },
   ],
   components: {
     securitySchemes: {

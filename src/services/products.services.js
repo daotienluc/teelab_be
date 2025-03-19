@@ -66,30 +66,32 @@ const productsServices = {
     const {
       name,
       price,
-      quantity,
       material,
       form,
       color,
       design,
       description,
       image,
-      product_type,
+      product_type_id,
       user_id,
     } = req.body;
+    console.log(product_type_id);
     const data = await prisma.products.create({
       data: {
         product_name: name,
         price: price,
-        quantity: quantity,
         material: material,
         form: form,
         color: color,
         design: design,
         description: description,
         image: image,
-        product_type_id: product_type,
-        creater_id: user_id,
-        sizes: "M",
+        product_type: {
+          connect: { product_type_id },
+        },
+        users: {
+          connect: { user_id },
+        },
       },
     });
     return data;
