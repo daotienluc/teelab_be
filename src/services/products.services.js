@@ -19,7 +19,7 @@ const productsServices = {
     const { user_id } = req.params;
     console.log({ user_id });
     const products = await prisma.products.findMany({
-      where: { creater_id: +user_id },
+      where: { user_id: +user_id },
     });
     return products;
   },

@@ -11,7 +11,7 @@ export const swaggerDocument = {
   },
   servers: [
     {
-      url: "http://localhost:3002/api",
+      url: "http://localhost:3010/api",
       description: "hehe",
     },
     { url: "https://teelab-be.onrender.com/api" },

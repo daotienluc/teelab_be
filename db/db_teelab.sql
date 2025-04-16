@@ -32,13 +32,25 @@ CREATE TABLE product_type (
 	description VARCHAR(255)
 )
 
-CREATE TABLE orders (
-	order_id INT PRIMARY KEY AUTO_INCREMENT,
-	address VARCHAR(255),
-	province VARCHAR(255),
-	district VARCHAR(255),
-	commune VARCHAR(255),
-	description VARCHAR(255)
-)
+CREATE TABLE `orders` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `order_id` VARCHAR(100) NOT NULL UNIQUE,
+  `request_id` VARCHAR(100) NOT NULL,
+  `amount` INT NOT NULL,
+  `order_info` VARCHAR(255),
+  `status` ENUM('pending', 'success', 'failed') DEFAULT 'pending',
+  `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE `order_details` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `order_id` INT NOT NULL,
+  `product_id` INT NOT NULL,
+  `quantity` INT NOT NULL,
+  `price` INT NOT NULL,
+  FOREIGN KEY (`order_id`) REFERENCES `orders`(`id`) ON DELETE CASCADE
+);
+
 
 

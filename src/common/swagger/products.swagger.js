@@ -9,7 +9,7 @@ export const productSwagger = {
       },
     },
   },
-  "/products/product-by-productName/{id}": {
+  "/products/productByProductName/{id}": {
     get: {
       tags: ["Products"],
 
@@ -49,7 +49,7 @@ export const productSwagger = {
       ],
     },
   },
-  "/products/product-by-userId/{userId}": {
+  "/products/productByUserId/{userId}": {
     get: {
       tags: ["Products"],
       responses: {
@@ -68,7 +68,7 @@ export const productSwagger = {
       ],
     },
   },
-  "/products/product-category": {
+  "/products/productCategory": {
     get: {
       tags: ["Products"],
       responses: {
@@ -78,7 +78,7 @@ export const productSwagger = {
       },
     },
   },
-  "/products/product-type/{productTypeId}": {
+  "/products/productType/{productTypeId}": {
     get: {
       tags: ["Products"],
       responses: {

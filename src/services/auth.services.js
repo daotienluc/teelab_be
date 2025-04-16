@@ -79,7 +79,6 @@ const authServices = {
           userName: name,
           avata: avata,
           facebook_app_id: id,
-          role: "USER",
         },
       });
     }
@@ -102,7 +101,6 @@ const authServices = {
           userName: name,
           email: email,
           avata: avata,
-          role: "USER",
         },
       });
     }

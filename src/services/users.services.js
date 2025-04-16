@@ -12,12 +12,15 @@ const usersService = {
   getUserById: async (req) => {
     const { id } = req.params;
     const data = await prisma.users.findUnique({ where: { user_id: +id } });
+    if (!data) {
+      throw new BadRequestException("User không tồn tại !");
+    }
     const newData = { ...data, password: (data.password = "") };
     return newData;
   },
 
   addUser: async (req) => {
-    const { userName, phone, email, password, avata, role } = req.body;
+    const { userName, phone, email, password, avata } = req.body;
     let userExists = await prisma.users.findFirst({ where: { email: email } });
     if (userExists) {
       throw new BadRequestException("Tài khoản đã tồn tại !");
@@ -30,7 +33,6 @@ const usersService = {
           password: passwordHash,
           phone: phone,
           avata: avata,
-          role: role,
         },
       });
     }

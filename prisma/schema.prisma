@@ -30,7 +30,6 @@ model products {
   description     String?       @db.VarChar(255)
   created_at      DateTime?     @default(now()) @db.Timestamp(0)
   updated_at      DateTime?     @default(now()) @db.Timestamp(0)
-  orderDetail     orderDetail[]
   product_type    product_type? @relation(fields: [product_type_id], references: [product_type_id], onDelete: NoAction, onUpdate: NoAction, map: "products_ibfk_1")
   users           users?        @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "products_ibfk_2")
 
@@ -67,36 +66,25 @@ model discounts {
   discount_percentage String?   @db.VarChar(255)
   created_at          DateTime? @default(now()) @db.Timestamp(0)
   updated_at          DateTime? @default(now()) @db.Timestamp(0)
-  orders              orders[]
-}
-
-model orderDetail {
-  order_detail_id Int       @id @default(autoincrement())
-  quantity        Int?
-  product_id      Int?
-  order_id        Int?
-  created_at      DateTime? @default(now()) @db.Timestamp(0)
-  updated_at      DateTime? @default(now()) @db.Timestamp(0)
-  products        products? @relation(fields: [product_id], references: [product_id], onDelete: NoAction, onUpdate: NoAction, map: "orderDetail_ibfk_1")
-  orders          orders?   @relation(fields: [order_id], references: [order_id], onDelete: NoAction, onUpdate: NoAction, map: "orderDetail_ibfk_2")
-
-  @@index([order_id], map: "order_id")
-  @@index([product_id], map: "product_id")
 }
 
 model orders {
-  order_id    Int           @id @default(autoincrement())
-  description String?       @db.VarChar(255)
-  user_id     Int?
-  discount_id Int?
-  created_at  DateTime?     @default(now()) @db.Timestamp(0)
-  updated_at  DateTime?     @default(now()) @db.Timestamp(0)
-  orderDetail orderDetail[]
-  discounts   discounts?    @relation(fields: [discount_id], references: [discount_id], onDelete: NoAction, onUpdate: NoAction, map: "orders_ibfk_1")
-  users       users?        @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "orders_ibfk_2")
+  id                Int             @id @default(autoincrement())
+  order_id          String          @unique(map: "order_id") @db.VarChar(100)
+  request_id        String          @db.VarChar(100)
+  amount            Int
+  order_info        String?         @db.VarChar(255)
+  status            orders_status?  @default(pending)
+  user_id           Int?
+  orders_address_id Int?
+  created_at        DateTime?       @default(now()) @db.DateTime(0)
+  updated_at        DateTime?       @default(now()) @db.DateTime(0)
+  order_details     order_details[]
+  users             users?          @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "orders_ibfk_1")
+  orders_address    orders_address? @relation(fields: [orders_address_id], references: [orders_address_id], onDelete: NoAction, onUpdate: NoAction, map: "orders_ibfk_2")
 
-  @@index([discount_id], map: "discount_id")
   @@index([user_id], map: "user_id")
+  @@index([orders_address_id], map: "orders_address_id")
 }
 
 model permissions {
@@ -133,4 +121,31 @@ model roles {
   updated_at       DateTime?          @default(now()) @db.Timestamp(0)
   role_permissions role_permissions[]
   users            users[]
+}
+
+model order_details {
+  id         Int    @id @default(autoincrement())
+  order_id   Int
+  product_id Int
+  quantity   Int
+  price      Int
+  orders     orders @relation(fields: [order_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "order_details_ibfk_1")
+
+  @@index([order_id], map: "order_id")
+}
+
+model orders_address {
+  orders_address_id  Int      @id @default(autoincrement())
+  address            String?  @db.VarChar(255)
+  province           String?  @db.VarChar(255)
+  district           String?  @db.VarChar(255)
+  wards_and_communes String?  @db.VarChar(255)
+  description        String?  @db.VarChar(255)
+  orders             orders[]
+}
+
+enum orders_status {
+  pending
+  success
+  failed
 }

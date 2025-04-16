@@ -6,6 +6,7 @@ import cartRouter from "./cart.router.js";
 import { swaggerDocument } from "../common/swagger/init.swagger.js";
 import swaggerUi from "swagger-ui-express";
 import commentsRouter from "./comments.router.js";
+import checkoutRouter from "./checkout.router.js";
 
 const rootRouter = express.Router();
 
@@ -18,6 +19,8 @@ rootRouter.use("/comment", commentsRouter);
 rootRouter.use("/auth", authRouter);
 rootRouter.use("/users", usersRouter);
 rootRouter.use("/cart", cartRouter);
+
+rootRouter.use("/checkout", checkoutRouter);
 
 rootRouter.use("/api-docs", swaggerUi.serve);
 rootRouter.get(
