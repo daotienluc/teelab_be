@@ -64,31 +64,22 @@ CREATE TABLE `discounts` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `orderDetail` (
-    `order_detail_id` INTEGER NOT NULL AUTO_INCREMENT,
-    `quantity` INTEGER NULL,
-    `product_id` INTEGER NULL,
-    `order_id` INTEGER NULL,
-    `created_at` TIMESTAMP(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-    `updated_at` TIMESTAMP(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-
-    INDEX `order_id`(`order_id`),
-    INDEX `product_id`(`product_id`),
-    PRIMARY KEY (`order_detail_id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
 CREATE TABLE `orders` (
-    `order_id` INTEGER NOT NULL AUTO_INCREMENT,
-    `description` VARCHAR(255) NULL,
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `order_id` VARCHAR(100) NOT NULL,
+    `request_id` VARCHAR(100) NOT NULL,
+    `amount` INTEGER NOT NULL,
+    `order_info` VARCHAR(255) NULL,
+    `status` ENUM('pending', 'success', 'failed') NULL DEFAULT 'pending',
     `user_id` INTEGER NULL,
-    `discount_id` INTEGER NULL,
-    `created_at` TIMESTAMP(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-    `updated_at` TIMESTAMP(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
+    `orders_address_id` INTEGER NULL,
+    `created_at` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
+    `updated_at` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
 
-    INDEX `discount_id`(`discount_id`),
+    UNIQUE INDEX `order_id`(`order_id`),
     INDEX `user_id`(`user_id`),
-    PRIMARY KEY (`order_id`)
+    INDEX `orders_address_id`(`orders_address_id`),
+    PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
@@ -130,6 +121,30 @@ CREATE TABLE `roles` (
     PRIMARY KEY (`role_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+-- CreateTable
+CREATE TABLE `order_details` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `order_id` INTEGER NOT NULL,
+    `product_id` INTEGER NOT NULL,
+    `quantity` INTEGER NOT NULL,
+    `price` INTEGER NOT NULL,
+
+    INDEX `order_id`(`order_id`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `orders_address` (
+    `orders_address_id` INTEGER NOT NULL AUTO_INCREMENT,
+    `address` VARCHAR(255) NULL,
+    `province` VARCHAR(255) NULL,
+    `district` VARCHAR(255) NULL,
+    `wards_and_communes` VARCHAR(255) NULL,
+    `description` VARCHAR(255) NULL,
+
+    PRIMARY KEY (`orders_address_id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 -- AddForeignKey
 ALTER TABLE `products` ADD CONSTRAINT `products_ibfk_1` FOREIGN KEY (`product_type_id`) REFERENCES `product_type`(`product_type_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
@@ -140,19 +155,16 @@ ALTER TABLE `products` ADD CONSTRAINT `products_ibfk_2` FOREIGN KEY (`user_id`) 
 ALTER TABLE `users` ADD CONSTRAINT `users_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `roles`(`role_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE `orderDetail` ADD CONSTRAINT `orderDetail_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products`(`product_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE `orders` ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE `orderDetail` ADD CONSTRAINT `orderDetail_ibfk_2` FOREIGN KEY (`order_id`) REFERENCES `orders`(`order_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
--- AddForeignKey
-ALTER TABLE `orders` ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`discount_id`) REFERENCES `discounts`(`discount_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
--- AddForeignKey
-ALTER TABLE `orders` ADD CONSTRAINT `orders_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE `orders` ADD CONSTRAINT `orders_ibfk_2` FOREIGN KEY (`orders_address_id`) REFERENCES `orders_address`(`orders_address_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
 ALTER TABLE `role_permissions` ADD CONSTRAINT `role_permissions_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `roles`(`role_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
 ALTER TABLE `role_permissions` ADD CONSTRAINT `role_permissions_ibfk_2` FOREIGN KEY (`permission_id`) REFERENCES `permissions`(`permission_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- AddForeignKey
+ALTER TABLE `order_details` ADD CONSTRAINT `order_details_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders`(`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
